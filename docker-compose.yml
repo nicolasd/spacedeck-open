@@ -7,6 +7,6 @@ services:
     ports:
       - "9666:9666"
     volumes:
-      - /absolute/path/to/storage:/app/storage
-      - /absolute/path/to/database.sqlite:/app/database.sqlite
+      - ./tmp/storage:/app/storage
+      - ./tmp/database.sqlite:/app/database.sqlite
 

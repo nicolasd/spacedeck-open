@@ -138,6 +138,39 @@ router.get('/s/:hash', (req, res) => {
   });
 });
 
+router.get('/w/:hash', (req, res) => {
+  var hash = req.params.hash;
+  if (hash.split("-").length > 0) {
+    hash = hash.split("-")[0];
+  }
+
+  var createSpace = () => {
+    var attrs = {};
+
+    attrs._id = uuidv4();
+    attrs.creator_id = "77bbf0bc-a12c-4122-85bb-160fca1c25b9";
+    attrs.edit_hash = hash;
+    attrs.edit_slug = hash;
+    attrs.access_mode = "public";
+
+    db.Space.create(attrs).then(createdSpace => {
+      res.redirect("/s/"+attrs.edit_hash );
+    });
+  }
+
+  db.Space.findOne({where: {"edit_hash": hash}}).then(function (space) {
+    if (space) {
+      if (req.accepts('text/html')){
+	      res.redirect("/spaces/"+space._id + "?spaceAuth=" + hash);
+      } else {
+	      res.status(200).json(space);
+      }
+    } else {
+      createSpace();
+    }
+  });
+});
+
 router.get('/spaces/:id', (req, res) => {
   res.render('spacedeck', { title: 'Space' });
 });
